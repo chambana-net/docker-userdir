@@ -11,7 +11,7 @@ EXPOSE 80
 
 RUN mkdir /etc/skel/public_html
 
-ADD files/etc/sshd_config /etc/ssh/sshd_config
+ADD files/etc/ssh/sshd_config /etc/ssh/sshd_config
 RUN mkdir /etc/ssh/auth
 
 ADD bin/authcommand.sh /etc/ssh/auth/authcommand.sh
