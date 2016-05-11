@@ -9,6 +9,8 @@ RUN apt-get -qq update && \
 
 EXPOSE 80
 
+VOLUME ["/home"]
+
 RUN mkdir /etc/skel/public_html
 
 ADD files/etc/ssh/sshd_config /etc/ssh/sshd_config
