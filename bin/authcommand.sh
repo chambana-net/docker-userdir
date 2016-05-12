@@ -66,7 +66,7 @@ if [[ $? -ne 0 ]]; then
 	[[ "$CREATEHOME" == yes ]] && ARGS+=" -m "
 
 	#Add user, then print key and exit.
-	useradd $ARGS $USER 2&>1
+	useradd $ARGS $USER
 	#Exit if couldn't create user.
 	[[ $? -eq 0 ]] || exit 1 
 	echo "${!keyvar}"
