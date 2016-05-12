@@ -24,10 +24,6 @@ set -o nounset                              # Treat unset variables as an error
 
 USERFILE=/etc/ssh/auth/users.yml
 USER="$1"
-HOMEDIR=/home
-CREATEHOME=no
-ARGS=" -U -b $HOMEDIR "
-
 
 parse_yaml() {
    local prefix=$2
@@ -51,29 +47,6 @@ keyvar="users_${USER}_key"
 # Exit if key is not defined for this user.
 [[ -v "$keyvar" ]] || exit 1
 
-[[ -d "${HOMEDIR}/${USER}" ]] || CREATEHOME=yes
-
-getent passwd "$USER" 2&>1
-if [[ $? -ne 0 ]]; then
-	gecosvar="users_${USER}_gecos"
-	[[ -v "$gecosvar" ]] && ARGS+=" -c ${!gecosvar} "
-	uidvar="users_${USER}_uid"
-	[[ -v "$uidvar" ]] && ARGS+=" -u ${!uidvar} "
-	gidvar="users_${USER}_gid"
-	[[ -v "$gidvar" ]] && ARGS+=" -g ${!gidvar} "
-	shellvar="users_${USER}_shell"
-	[[ -v "$shellvar" ]] && ARGS+=" -g ${!shellvar} "
-	[[ "$CREATEHOME" == yes ]] && ARGS+=" -m "
-
-	#Add user, then print key and exit.
-	useradd $ARGS $USER
-	#Exit if couldn't create user.
-	[[ $? -eq 0 ]] || exit 1 
-	echo "${!keyvar}"
-	exit 0
-fi
-
-#User exists but there's no home directory.
-[[ "$CREATEHOME" == yes ]] && { mkdir -p "${HOMEDIR}/${USER}" 2&>1; chown -R "${USER}:${USER}" "${HOMEDIR}/${USER}" 2&>1; } 
+# Echo key and exit.
 echo "${!keyvar}"
 exit 0

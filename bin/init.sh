@@ -37,5 +37,51 @@ a2enmod userdir
 MSG "Create sshd run directory..."
 mkdir /var/run/sshd
 
+MSG "Creating users..."
+USERFILE=/etc/ssh/auth/users.yml
+HOMEDIR=/home
+CREATEHOME=no
+ARGS=" -U -b $HOMEDIR "
+
+parse_yaml() {
+   local prefix=$2
+   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+   sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
+   awk -F$fs '{
+      indent = length($1)/2;
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]}}
+      if (length($3) > 0) {
+         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+      }
+   }'
+}
+
+eval $(parse_yaml "$USERFILE" "users_")
+
+for USER in "$(compgen -v | grep ^users_.* | cut -d _ -f 2)"; do
+	[[ -d "${HOMEDIR}/${USER}" ]] || CREATEHOME=yes
+	
+	getent passwd "$USER" 2&>1
+	if [[ $? -ne 0 ]]; then
+		#If user doesn't exist
+		MSG "Creating user: $USER"
+		gecosvar="users_${USER}_gecos"
+		[[ -v "$gecosvar" ]] && ARGS+=" -c ${!gecosvar} "
+		uidvar="users_${USER}_uid"
+		[[ -v "$uidvar" ]] && ARGS+=" -u ${!uidvar} "
+		gidvar="users_${USER}_gid"
+		[[ -v "$gidvar" ]] && ARGS+=" -g ${!gidvar} "
+		shellvar="users_${USER}_shell"
+		[[ -v "$shellvar" ]] && ARGS+=" -g ${!shellvar} "
+		[[ "$CREATEHOME" == yes ]] && ARGS+=" -m "
+	
+		#Add user, then print key and exit.
+		/usr/sbin/useradd $ARGS $USER
+	fi
+done
+
 MSG "Starting services..."
 supervisord -c /etc/supervisor/supervisord.conf
