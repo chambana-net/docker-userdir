@@ -22,6 +22,7 @@ MSG "Installing site..."
 cd /tmp/www/${SUBDIR}
 jekyll build -d /var/www/html
 chown -R www-data:www-data /var/www/html
+cd /
 rm -rf /tmp/www
 
 MSG "Cleaning Apache logs..."
