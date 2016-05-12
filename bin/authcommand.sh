@@ -22,7 +22,7 @@ set -o nounset                              # Treat unset variables as an error
 #Check to make sure argument is provided
 #[[ -v "1" ]] || exit 1
 
-USERFILE=./users.yml
+USERFILE=/etc/ssh/auth/users.yml
 USER="$1"
 HOMEDIR=/home
 CREATEHOME=no
@@ -66,7 +66,7 @@ if [[ $? -ne 0 ]]; then
 	[[ "$CREATEHOME" == yes ]] && ARGS+=" -m "
 
 	#Add user, then print key and exit.
-	useradd "$ARGS" "$USER" 2&>1
+	useradd $ARGS $USER 2&>1
 	#Exit if couldn't create user.
 	[[ $? -eq 0 ]] || exit 1 
 	echo "${!keyvar}"
