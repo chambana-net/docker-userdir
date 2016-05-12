@@ -34,5 +34,8 @@ MSG "Configuring Apache..."
 a2ensite 000-default.conf
 a2enmod userdir
 
+MSG "Create sshd run directory..."
+mkdir /var/run/sshd
+
 MSG "Starting services..."
 supervisord -c /etc/supervisor/supervisord.conf
