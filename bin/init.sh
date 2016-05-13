@@ -61,7 +61,7 @@ parse_yaml() {
 
 eval $(parse_yaml "$USERFILE" "users_")
 
-for USER in "$(compgen -v | grep ^users_.* | cut -d _ -f 2)"; do
+for USER in "$(compgen -v | grep ^users_.*_key | cut -d _ -f 2)"; do
 	[[ -d "${HOMEDIR}/${USER}" ]] || CREATEHOME=yes
 	
 	getent passwd "$USER" 2&>1
@@ -75,7 +75,7 @@ for USER in "$(compgen -v | grep ^users_.* | cut -d _ -f 2)"; do
 		gidvar="users_${USER}_gid"
 		[[ -v "$gidvar" ]] && ARGS+=" -g ${!gidvar} "
 		shellvar="users_${USER}_shell"
-		[[ -v "$shellvar" ]] && ARGS+=" -g ${!shellvar} "
+		[[ -v "$shellvar" ]] && ARGS+=" -s ${!shellvar} "
 		[[ "$CREATEHOME" == yes ]] && ARGS+=" -m "
 	
 		#Add user, then print key and exit.
