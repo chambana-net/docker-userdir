@@ -40,8 +40,6 @@ mkdir /var/run/sshd
 MSG "Creating users..."
 USERFILE=/etc/ssh/auth/users.yml
 HOMEDIR=/home
-CREATEHOME=no
-ARGS=" -U -b $HOMEDIR "
 
 parse_yaml() {
    local prefix=$2
@@ -61,7 +59,9 @@ parse_yaml() {
 
 eval $(parse_yaml "$USERFILE" "users_")
 
-for USER in "$(compgen -v | grep ^users_.*_key | cut -d _ -f 2)"; do
+for USER in $(compgen -v | grep ^users_.*_key | cut -d _ -f 2); do
+	ARGS=" -U -b $HOMEDIR "
+	CREATEHOME=no
 	[[ -d "${HOMEDIR}/${USER}" ]] || CREATEHOME=yes
 	
 	getent passwd "$USER" 2&>1
