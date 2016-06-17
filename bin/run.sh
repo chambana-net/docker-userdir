@@ -4,22 +4,20 @@
 
 CHECK_BIN "jekyll"
 CHECK_BIN "git"
+CHECK_BIN "bundle"
 CHECK_BIN "a2ensite"
 CHECK_BIN "a2enmod"
-CHECK_VAR GITHUB_USER
-CHECK_VAR GITHUB_REPO
-
-#If subdir not defined, set default.
-SUBDIR=${SUBDIR:-/}
-GITHUB_BRANCH=${GITHUB_BRANCH:-"master"}
+CHECK_VAR JEKYLL_GITHUB_USER
+CHECK_VAR JEKYLL_GITHUB_REPO
 
 MSG "Cloning repository..."
-git clone -b ${GITHUB_BRANCH} --single-branch https://github.com/${GITHUB_USER}/${GITHUB_REPO} /tmp/www
+git clone -b ${JEKYLL_GITHUB_BRANCH} --single-branch https://github.com/${JEKYLL_GITHUB_USER}/${JEKYLL_GITHUB_REPO} /tmp/www
 [[ $? -eq 0 ]] || { ERR "Failed to clone repository, aborting."; exit 1; }
-[[ -d /tmp/www/${SUBDIR} ]] || { ERR "Subdirectory $SUBDIR does not exist, aborting."; exit 1; }
+[[ -d /tmp/www/${JEKYLL_GITHUB_SUBDIR} ]] || { ERR "Subdirectory $JEKYLL_GITHUB_SUBDIR does not exist, aborting."; exit 1; }
 
 MSG "Installing site..."
-cd /tmp/www/${SUBDIR}
+cd /tmp/www/${JEKYLL_GITHUB_SUBDIR}
+[[ -e /tmp/www/${JEKYLL_GITHUB_SUBDIR}/Gemfile ]] && bundle install 
 jekyll build -d /var/www/html
 chown -R www-data:www-data /var/www/html
 cd /
@@ -84,4 +82,5 @@ for USER in $(compgen -v | grep ^users_.*_key | cut -d _ -f 2); do
 done
 
 MSG "Starting services..."
-supervisord -c /etc/supervisor/supervisord.conf
+
+exec "$@"

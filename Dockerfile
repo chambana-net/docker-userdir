@@ -21,7 +21,8 @@ RUN chmod +x /etc/ssh/auth/authcommand.sh
 
 ADD files/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 
-ADD bin/init.sh /app/bin/init.sh
-RUN chmod +x /app/bin/init.sh
+ADD bin/run.sh /app/bin/run.sh
+RUN chmod +x /app/bin/run.sh
 
-CMD ["/app/bin/init.sh"]
+ENTRYPOINT ["/app/bin/run.sh"]
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"] 
