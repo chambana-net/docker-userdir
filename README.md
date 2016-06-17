@@ -27,8 +27,8 @@ example-com:
       - /root/users.yml:/etc/ssh/auth/users.yml:ro
       - /var/users:/home
     environment:
-      - GITHUB_USER=example
-      - GITHUB_REPO=example.com
+      - JEKYLL_GITHUB_USER=example
+      - JEKYLL_GITHUB_REPO=example.com
 ```
 This example downloads and builds a Jekyll site from the 'example.com' project owned by user 'example', mounts the `/var/users` directory from the host to serve as user home directories inside the container, and exposes SSH on port 2222 and Apache on port 80. If `users.yml` was as above and this host was reachable at `example.com`, `foo` would be able to login via SSH on port 2222 to host `example.com`, and files placed in `/home/foo/public_html` in the container would be accessible at `http://example.com/~foo/`.
 
