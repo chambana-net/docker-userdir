@@ -10,9 +10,11 @@ Besides the above functionality, this container provides user creation and SSH s
 
 ```
 foo:
-  key: bar
+  keys:
+    - bar
 baz:
-  key: qux
+  keys:
+    - qux
 ```
 
 Which creates the users `foo` and `bar`, and where they keys provided are full SSH public key strings such as would be contained in an `authorized_keys` file. An example docker-compose stanza:
