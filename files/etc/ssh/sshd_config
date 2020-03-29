@@ -19,7 +19,7 @@ LogLevel INFO
 
 # Authentication:
 LoginGraceTime 120
-PermitRootLogin without-password
+PermitRootLogin no
 StrictModes yes
 
 PubkeyAuthentication yes
@@ -53,7 +53,7 @@ PasswordAuthentication no
 #GSSAPIAuthentication no
 #GSSAPICleanupCredentials yes
 
-X11Forwarding yes
+X11Forwarding no
 #AllowTcpForwarding yes
 X11DisplayOffset 10
 PrintMotd no
