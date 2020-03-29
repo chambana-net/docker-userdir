@@ -7,7 +7,8 @@ RUN apt-get -qq update && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
-EXPOSE 80
+EXPOSE 8080
+EXPOSE 2222
 
 VOLUME ["/home"]
 
@@ -25,4 +26,4 @@ ADD bin/run.sh /app/bin/run.sh
 RUN chmod +x /app/bin/run.sh
 
 ENTRYPOINT ["/app/bin/run.sh"]
-CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"] 
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
