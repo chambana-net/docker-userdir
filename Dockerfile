@@ -7,7 +7,7 @@ RUN apt-get -qq update && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8080
+EXPOSE 80
 EXPOSE 2222
 
 VOLUME ["/home"]
